@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!--
+      THIS IS A BUILD FILE FOR COMP 1510, SPECIFICALLY YOUR ASSIGNMENT FOUR (4).
+      DO NOT EDIT ANYTHING ELSE IN THIS FILE OTHER THAN YOUR NAME. TYPE YOUR
+      LAST NAME, FOLLOWED BY A COMMA THEN BY YOUR FIRST NAME. IF YOU HAVE MORE
+      THAN ONE WORD FOR YOUR FIRST (OR GIVEN NAME), PLEASE USE COMMAS TO
+      SIGNIFY THIS.
+  -->
+<project name="COMP 1510 Assignment 4" default="clean" basedir=".">
+
+  <taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties" 
+     classpath="lib/checkstyle-6.10-all.jar"/>
+
+  <!-- REPLACE THIS NAME WITH YOUR OWN -->
+  <property name="studentName" value="Cha,RyanSungjoo"/>
+
+  <property name="build" location="build"/>
+  <property name="dist" location="dist"/>
+  <property name="src" location="src"/>
+  <property name="assign" value="-assign-4"/>
+
+
+  <target name="runall" depends="clean">
+    <java dir="${dist}" jar="${dist}/q1.jar" fork="true"/>
+    <java dir="${dist}" jar="${dist}/q2.jar" fork="true"/>
+    <java dir="${dist}" jar="${dist}/q3.jar" fork="true"/>
+  </target>
+
+  <target name="Statistics">
+    <java dir="${dist}" jar="${dist}/q1.jar" fork="true"/>
+  </target>
+
+  <target name="DrawRectangle">
+    <java dir="${dist}" jar="${dist}/q2.jar" fork="true"/>
+  </target>
+
+  <target name="StopWatch">
+    <java dir="${dist}" jar="${dist}/q3.jar" fork="true"/>
+  </target>
+
+  <target name="javadoc">
+    <javadoc destdir="docs/api" author="true" version="true" use="true"
+    windowtitle="COMP 1510 Assignment 4 - ${studentName}">
+    <fileset dir="${src}" defaultexcludes="yes">
+    </fileset>
+    </javadoc>
+  </target>
+
+
+  <target name="clean" depends="checkstyle">
+    <delete dir="${build}"/>
+  </target>
+
+
+  <target name="checkstyle" depends="zipsrc">
+    <checkstyle config="Comp1510CheckstyleV6.xml" failOnViolation="false">
+      <fileset dir="${src}" includes="**/*.java"/>
+      <formatter type="xml" toFile="reports/styleResult.xml"/>
+    </checkstyle>
+    <xslt in="./reports/styleResult.xml" out="./reports/results.html"
+      style="./checkstyle-noframes-sorted.xsl"/>
+  </target>
+
+
+  <target name="zipsrc" depends="build">
+    <zip destfile="${studentName}${assign}.zip" basedir="${src}" excludes="*.bat"/>
+  </target>
+
+
+  <target name="build" depends="compile">
+
+    <!-- Question 1 -->
+    <echo message="Creating JAR for project 1 - Statistics  "/>
+    <jar jarfile="${dist}/q1.jar">
+      <fileset dir="${build}" includes="q1/**"/>
+      <manifest>
+        <attribute name="Main-Class" value="q1.Statistics"/>
+        <attribute name="Built-By" value="${studentName}"/>
+      </manifest>
+    </jar>
+    <!-- Question 2 -->
+    <echo message="Creating JAR for project 2 - DrawTriangle"/>
+    <jar jarfile="${dist}/q2.jar">
+      <fileset dir="${build}" includes="q2/**"/>
+      <manifest>
+        <attribute name="Main-Class" value="q2.DrawTriangle"/>
+        <attribute name="Built-By" value="${studentName}"/>
+      </manifest>
+    </jar>
+    <!-- Question 3 -->
+    <echo message="Creating JAR for project 3 - StopWatch"/>
+    <jar jarfile="${dist}/q3.jar">
+      <fileset dir="${build}" includes="q3/**"/>
+      <manifest>
+        <attribute name="Main-Class" value="q3.StopWatch"/>
+        <attribute name="Built-By" value="${studentName}"/>
+      </manifest>
+    </jar>
+  </target>
+
+
+  <!-- build all of the projects -->
+  <target name="compile">
+    <mkdir dir="${build}"/>
+    <javac srcdir="${src}" destdir="build" debug="true" includes="**/*.java"/>
+  </target>
+
+
+</project>
